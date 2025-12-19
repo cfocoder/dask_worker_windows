@@ -16,6 +16,7 @@ uv.lock
 # Dask logs
 *.log
 worker*.log
+worker_error.log
 
 # Environment variables
 .env

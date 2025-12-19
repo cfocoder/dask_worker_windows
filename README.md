@@ -52,6 +52,21 @@ Worker de Dask para procesamiento distribuido de documentos con Docling sobre re
 
 ## Uso
 
+### Scripts Disponibles
+
+**`setup_autostart.ps1`** - Configuración inicial (ejecutar UNA VEZ):
+- Crea un archivo VBS en la carpeta de inicio de Windows
+- Configura el inicio automático del worker al arrancar el sistema
+- Solo necesitas ejecutarlo una vez después de clonar el repositorio
+
+**`start_worker.ps1`** - Inicio del worker:
+- Inicia el worker de Dask y lo conecta al scheduler
+- Se ejecuta automáticamente al iniciar sesión (si configuraste el autostart)
+- También puedes ejecutarlo manualmente cuando lo necesites
+
+**Relación entre los scripts:**
+`setup_autostart.ps1` crea un VBS que ejecuta automáticamente `start_worker.ps1` cada vez que inicias sesión en Windows.
+
 ### Inicio Automático
 
 El worker se iniciará automáticamente al arrancar Windows gracias al script VBS en la carpeta de inicio (`DaskWorker.vbs`).

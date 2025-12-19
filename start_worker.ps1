@@ -41,5 +41,15 @@ if ($WORKER_NAME) {
 Write-Host "Log file: $PROJECT_DIR\worker.log"
 Write-Host ""
 
-# Start the dask worker using the virtual environment's python explicitly to avoid version mismatches
-Invoke-Expression $workerCommand
+# Build arguments list
+$arguments = @("-m", "distributed.cli.dask_worker", "tcp://$($SCHEDULER_IP):$($SCHEDULER_PORT)", "--no-nanny")
+if ($WORKER_NAME) {
+    $arguments += @("--name", $WORKER_NAME)
+}
+
+# Start the dask worker in background using Start-Process
+Start-Process -FilePath "$VENV_PATH\Scripts\python.exe" `
+    -ArgumentList $arguments `
+    -RedirectStandardOutput "$PROJECT_DIR\worker.log" `
+    -RedirectStandardError "$PROJECT_DIR\worker_error.log" `
+    -WindowStyle Hidden
