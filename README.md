@@ -41,35 +41,42 @@ Worker de Dask para procesamiento distribuido de documentos con Docling sobre re
    WORKER_NAME=worker-1
    ```
 
-4. **Configurar inicio automático (opcional pero recomendado):**
+4. **Configurar inicio automático (RECOMENDADO):**
    
-   Ejecuta el script de configuración para que el worker se inicie automáticamente al arrancar Windows:
+   Ejecuta el script de configuración para que el worker se inicie automáticamente al arrancar Windows usando Task Scheduler:
    ```powershell
-   .\setup_autostart.ps1
+   .\setup_task_scheduler.ps1
    ```
    
-   Esto creará un script VBS en la carpeta de inicio de Windows.
+   Esto configurará una tarea programada de Windows que iniciará el worker automáticamente cuando inicies sesión.
 
 ## Uso
 
 ### Scripts Disponibles
 
-**`setup_autostart.ps1`** - Configuración inicial (ejecutar UNA VEZ):
-- Crea un archivo VBS en la carpeta de inicio de Windows
-- Configura el inicio automático del worker al arrancar el sistema
+**`setup_task_scheduler.ps1`** - Configuración de inicio automático (ejecutar UNA VEZ):
+- Configura una tarea programada de Windows (Task Scheduler)
+- El worker se iniciará automáticamente al iniciar sesión en Windows
 - Solo necesitas ejecutarlo una vez después de clonar el repositorio
+- Más confiable que el método VBS de carpeta de inicio
 
 **`start_worker.ps1`** - Inicio del worker:
 - Inicia el worker de Dask y lo conecta al scheduler
-- Se ejecuta automáticamente al iniciar sesión (si configuraste el autostart)
+- Se ejecuta automáticamente al iniciar sesión (si configuraste Task Scheduler)
 - También puedes ejecutarlo manualmente cuando lo necesites
 
 **Relación entre los scripts:**
-`setup_autostart.ps1` crea un VBS que ejecuta automáticamente `start_worker.ps1` cada vez que inicias sesión en Windows.
+`setup_task_scheduler.ps1` crea una tarea programada que ejecuta automáticamente `start_worker.ps1` cada vez que inicias sesión en Windows.
 
 ### Inicio Automático
 
-El worker se iniciará automáticamente al arrancar Windows gracias al script VBS en la carpeta de inicio (`DaskWorker.vbs`).
+El worker se iniciará automáticamente al iniciar sesión en Windows gracias a la tarea programada configurada por `setup_task_scheduler.ps1`.
+
+**Gestionar la tarea programada:**
+- Ver estado: `Get-ScheduledTask -TaskName 'DaskWorkerAutostart'`
+- Ejecutar ahora: `Start-ScheduledTask -TaskName 'DaskWorkerAutostart'`
+- Deshabilitar: `Disable-ScheduledTask -TaskName 'DaskWorkerAutostart'`
+- Eliminar: `Unregister-ScheduledTask -TaskName 'DaskWorkerAutostart' -Confirm:$false`
 
 **IMPORTANTE:** Asegúrate de que ProtonVPN u otras VPNs tradicionales estén desconectadas, ya que bloquean el tráfico de Tailscale.
 

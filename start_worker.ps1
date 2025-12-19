@@ -19,8 +19,9 @@ $WORKER_NAME = $env:WORKER_NAME ?? ""
 # Change to project directory
 Set-Location -Path $PROJECT_DIR
 
-# Activate the virtual environment
-& "$VENV_PATH\Scripts\Activate.ps1"
+# Log startup
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+Add-Content -Path "$PROJECT_DIR\startup.log" -Value "$timestamp - Starting Dask Worker script"
 
 # Build worker command
 $workerCommand = "& `"$VENV_PATH\Scripts\python.exe`" -m distributed.cli.dask_worker `"tcp://$($SCHEDULER_IP):$($SCHEDULER_PORT)`" --no-nanny"
