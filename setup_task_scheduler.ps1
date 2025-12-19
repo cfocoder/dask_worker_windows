@@ -19,9 +19,9 @@ $action = New-ScheduledTaskAction `
     -Argument "/c `"$PROJECT_DIR\start_worker.bat`"" `
     -WorkingDirectory $PROJECT_DIR
 
-# Create a trigger that runs at logon with a 30 second delay to ensure network is ready
+# Create a trigger that runs at logon with a 60 second delay to ensure Tailscale is ready
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
-$trigger.Delay = "PT30S"  # 30 seconds delay
+$trigger.Delay = "PT60S"  # 60 seconds delay for Tailscale to connect
 
 # Create task settings
 $settings = New-ScheduledTaskSettingsSet `

@@ -20,8 +20,18 @@ if exist .env (
     )
 )
 
-REM Log startup
-echo %date% %time% - Starting Dask Worker >> startup.log
+REM Wait for Tailscale to be connected before starting worker
+echo %date% %time% - Waiting for Tailscale connection... >> startup.log
+
+:CHECK_TAILSCALE
+tailscale status | findstr /C:"100.65.52.49" >nul 2>&1
+if errorlevel 1 (
+    echo %date% %time% - Tailscale not ready, waiting 5 seconds... >> startup.log
+    timeout /t 5 /nobreak >nul
+    goto CHECK_TAILSCALE
+)
+
+echo %date% %time% - Tailscale connected, starting Dask Worker >> startup.log
 
 REM Start the worker using the venv python
 if "%WORKER_NAME%"=="" (
