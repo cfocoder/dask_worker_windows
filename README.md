@@ -60,13 +60,25 @@ Worker de Dask para procesamiento distribuido de documentos con Docling sobre re
 - Solo necesitas ejecutarlo una vez después de clonar el repositorio
 - Más confiable que el método VBS de carpeta de inicio
 
-**`start_worker.ps1`** - Inicio del worker:
+**`start_worker.bat`** - Script batch de inicio del worker:
 - Inicia el worker de Dask y lo conecta al scheduler
-- Se ejecuta automáticamente al iniciar sesión (si configuraste Task Scheduler)
+- Se ejecuta automáticamente via Task Scheduler al iniciar sesión
 - También puedes ejecutarlo manualmente cuando lo necesites
+- Compatible con Windows PowerShell 5.1 (usado por Task Scheduler)
+
+**`start_worker.ps1`** - Script PowerShell de inicio (alternativo):
+- Versión PowerShell del inicio del worker
+- Úsalo si prefieres PowerShell 7+ para ejecución manual
+- El autostart usa start_worker.bat por compatibilidad
+
+**`check_worker.ps1`** - Verificar estado del worker:
+- Muestra si el worker está corriendo
+- Estado de Task Scheduler y última ejecución
+- Conectividad al scheduler
+- Logs recientes
 
 **Relación entre los scripts:**
-`setup_task_scheduler.ps1` crea una tarea programada que ejecuta automáticamente `start_worker.ps1` cada vez que inicias sesión en Windows.
+`setup_task_scheduler.ps1` crea una tarea programada que ejecuta automáticamente `start_worker.bat` cada vez que inicias sesión en Windows. El batch script es más confiable para autostart porque funciona correctamente con Windows PowerShell 5.1 usado por Task Scheduler.
 
 ### Inicio Automático
 
@@ -82,9 +94,27 @@ El worker se iniciará automáticamente al iniciar sesión en Windows gracias a 
 
 ### Iniciar el Worker Manualmente
 
+Usa el script batch (recomendado):
+```cmd
+start_worker.bat
+```
+
+O el script PowerShell:
 ```powershell
 .\start_worker.ps1
 ```
+
+### Verificar Estado del Worker
+
+```powershell
+.\check_worker.ps1
+```
+
+Este script muestra:
+- Si el worker está corriendo y su Process ID
+- Estado de la tarea programada
+- Conectividad al scheduler
+- Logs recientes
 
 El worker se conectará al scheduler y estará listo para procesar tareas.
 

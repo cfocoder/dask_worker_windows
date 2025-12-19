@@ -13,21 +13,25 @@ if ($existingTask) {
     Unregister-ScheduledTask -TaskName $TASK_NAME -Confirm:$false
 }
 
-# Create a new task action - run PowerShell script
+# Create a new task action - run batch script (more reliable than PowerShell for background processes)
 $action = New-ScheduledTaskAction `
-    -Execute "powershell.exe" `
-    -Argument "-ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PROJECT_DIR\start_worker.ps1`"" `
+    -Execute "cmd.exe" `
+    -Argument "/c `"$PROJECT_DIR\start_worker.bat`"" `
     -WorkingDirectory $PROJECT_DIR
 
-# Create a trigger that runs at logon
+# Create a trigger that runs at logon with a 30 second delay to ensure network is ready
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$trigger.Delay = "PT30S"  # 30 seconds delay
 
 # Create task settings
 $settings = New-ScheduledTaskSettingsSet `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
     -StartWhenAvailable `
-    -RunOnlyIfNetworkAvailable
+    -RunOnlyIfNetworkAvailable `
+    -ExecutionTimeLimit (New-TimeSpan -Hours 0) `
+    -RestartCount 3 `
+    -RestartInterval (New-TimeSpan -Minutes 1)
 
 # Create the principal (user context)
 $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Limited
