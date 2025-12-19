@@ -13,10 +13,10 @@ if ($existingTask) {
     Unregister-ScheduledTask -TaskName $TASK_NAME -Confirm:$false
 }
 
-# Create a new task action - run batch script (more reliable than PowerShell for background processes)
+# Create a new task action - run VBScript wrapper to hide cmd window completely
 $action = New-ScheduledTaskAction `
-    -Execute "cmd.exe" `
-    -Argument "/c `"$PROJECT_DIR\start_worker.bat`"" `
+    -Execute "wscript.exe" `
+    -Argument "`"$PROJECT_DIR\start_worker_hidden.vbs`"" `
     -WorkingDirectory $PROJECT_DIR
 
 # Create a trigger that runs at logon with a 60 second delay to ensure Tailscale is ready
