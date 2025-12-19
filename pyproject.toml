@@ -1,0 +1,18 @@
+[project]
+name = "daskworker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.12.10"
+dependencies = [
+    "dask[complete]==2025.5.1",
+    "distributed==2025.5.1",
+    "cloudpickle==3.1.1",
+    "lz4==4.4.4",
+    "msgpack==1.1.0",
+    "numpy==2.2.6",
+    "pandas==2.2.3",
+    "toolz==0.12.0",
+    "tornado==6.5",
+    "docling>=2.21.0",
+]
